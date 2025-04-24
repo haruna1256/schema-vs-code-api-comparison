@@ -18,10 +18,22 @@
 
 ```bash
 schema-vs-code-api-comparison/
+├── client/                # Reactアプリのソースコード
+│   ├── Dockerfile         # React用のDockerfile
+│   ├── package.json       # Reactのパッケージ設定
+│   └── src/               # Reactのソースコード
+│       └── ...
+├── server/                # サーバー（Go製バックエンド）
+│   ├── Dockerfile         # Go用のDockerfile
+│   ├── go.mod             # Goのモジュール設定
+│   ├── go.sum             # Goのモジュール設定
+│   └── main.go            # 共通の起動ファイル
+├── docker-compose.yml     # フロント・バックエンドの連携定義
+|
 ├── docs/                # ドキュメント関連（比較結果や進捗メモ）
 │   ├── comparison.md    # スキーマ駆動開発 vs コードファースト の比較
 │   ├── api-design.md    # 読書記録アプリAPI設計（概要・仕様書）
-│   └── research-notes.md # ゼミでのメモや実験結果
+│   └── experiment-log.md # ゼミでのメモや実験結果
 ├── src/                 # 実装コード
 │   ├── openapi/         # OpenAPIを用いた実装
 │   │   ├── api/         # OpenAPI仕様に基づいたエンドポイント
