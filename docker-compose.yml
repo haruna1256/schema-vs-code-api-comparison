@@ -1,0 +1,30 @@
+version: '3'
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    working_dir: /app
+    command: npm start
+    volumes:
+      - ./client:/app
+    networks:
+      - app-network
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    working_dir: /app
+    volumes:
+      - ./server:/app
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
