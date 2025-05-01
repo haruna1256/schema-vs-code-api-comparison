@@ -23,6 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-node_modules/     ← 依存ライブラリ。npm install で再現可能
-dist/             ← `npm run build` で生成される本番用ビルド
-.vite/            ← Viteの開発キャッシュ
+node_modules/   
+dist/            
+.vite/           
