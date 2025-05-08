@@ -145,10 +145,10 @@ dockerの立ち上げに手間取った
 ---
 
 #### 🧭 実施内容：
-- openapiを書いていく
+- openapiの知識を深める
 
 #### ⌛ 所要時間：
-- 
+- 30
 
 #### 💡 気づき・課題・感想：
 
@@ -187,7 +187,6 @@ string型は下記のフォーマットに分類
 
 
 ```
-
 openapi: 
 
 
@@ -204,15 +203,45 @@ paths: {}
 components: {}
 ```
 
-#### openapi: "3.0.3"
+#### openapi
 - 使用するOpenAPIのバージョン
 
 #### info
+- API自体のメタデータを定義
 |フィールド	|型	|説明|
 |-----|-----|----|
 |title	|string	|APIのタイトル|
 |description	|string|	APIの説明。マークダウンも可能|
 |version	|string	|APIドキュメントのバージョン|
+
+#### servers
+- APIを提供しているサーバーを定義
+
+開発環境や本番環境のURL情報を記載
+
+サーバーは開発環境、本番環境など複数定義する可能性があることからハイフンを利用して配列で表現していく
+
+|フィールド	|型	|説明|
+|----|----|----|
+|url	|string	|APIを提供しているサーバーのURL|
+|description	|string	|提供しているサーバーの情報|
+
+
+```
+openapi: "3.0.3"
+
+info:
+  title: "サンプルAPI"
+  description: "サンプルとして作成したAPIです"
+  version: "1.0.0"
+
+servers:
+- url: "http://localhost:3000"
+  description: "ローカル環境"
+- url: "http://sample.com"
+  description: "本番環境"
+
+```
 
 
 ---
