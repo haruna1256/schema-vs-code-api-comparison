@@ -68,10 +68,3 @@ schema-vs-code-api-comparison/
 └── package.json         # Node.jsの依存関係など
 
 
-
-
-
-
-
-
-
