@@ -1,18 +1,13 @@
-openapi: "3.0.3"
+openapi: 
 
-info:
-  title: "Sample API"
-  version: "1.0.0"
+info: {}
 
-paths:
-  "/api/v1/hello":
-    get:
-      summary: "hello"
-      responses:
-        "200":
-          description: "成功"
-          content:
-            application/json:
-              schema:
-                type: string
-                example: "hello"
+paths: {}
+
+servers: {}
+
+tags: {}
+
+paths: {}
+
+components: {}
