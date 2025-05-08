@@ -13,8 +13,12 @@
 それぞれの手法を実装・比較し、開発効率・保守性・チーム開発との相性などを評価・考察します。
 
 ---
+研究記録は[ここに](https://github.com/haruna1256/schema-vs-code-api-comparison/blob/dev/docs/experiment-log.md)
 
-## 📁 ディレクトリ構成（予定）
+
+---
+
+## 📁 ディレクトリ構成
 
 ```bash
 schema-vs-code-api-comparison/
