@@ -8,7 +8,7 @@ services:
     ports:
       - "3000:80"
     volumes:
-      - ./src:/app/src
+      - ./src/openapi/api:/openapi 
       - ./public:/app/public
     networks:
       - app-network
@@ -24,6 +24,14 @@ services:
       - ./server:/app
     networks:
       - app-network
+
+  prism:
+    image: stoplight/prism:4
+    command: 'mock -h 0.0.0.0 /src/openapi/api/openapi.yaml'
+    volumes:
+      - ./src/openapi/api/openapi.yaml:/src/openapi/api/openapi.yaml:ro
+    ports:
+      - '4010:4010'
 
 networks:
   app-network:
