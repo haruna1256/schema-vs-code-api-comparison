@@ -138,6 +138,8 @@ paths:
       deprecated: false
       parameters:
         - $ref: "#/components/parameters/CommentId"
+      security:
+        - apikey_auth: []
       responses:
         "200":
           description: "成功"
@@ -175,3 +177,10 @@ components:
       required: true
       schema: { type:string }
       example: "1"
+  # 新規投稿(POST)する時にAPI keyを要求
+  securitySchemes:
+    apikey_auth:
+      description: "API key authorization"
+      type: apiKey
+      in: header
+      name: "X-Api-Key"

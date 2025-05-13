@@ -351,4 +351,24 @@ componentを参照するときは$refで呼び出します。
 GETでオブジェクト配列型のデータが返ってくる
 POSTで投稿したオブジェクトのデータが返ってくる
 
+
+#### security
+OpenAPIで定義できる認証認可は下記。
+
+|種別|	形式	|説明|
+|---|---|---|
+|http	|Basic	|Basic認証|
+|http|	Bearer|	JWTを利用した認可|
+|apikey|	header|	APIkeyを利用した認可|
+|apikey	|cookie	|ログインセッション|
+|oauth2|	-	|OAuth2.0|
+セキュリティーはコンポーネントに定義していきます。
+
+Securityschemes
+セキュリティースキームの名前
+スキームの説明
+種別
+スキーマの定義
+
+
 ---
