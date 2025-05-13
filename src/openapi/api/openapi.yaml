@@ -1,13 +1,186 @@
-openapi: 
+openapi: "3.0.3"
 
-info: {}
+info:
+  title: "テスト"
+  description: "テストで作成するAPIです。"
+  version: "1.0.0"
 
-paths: {}
+servers:
+  - url: "http://localhost:3001"
+    description: "モックサーバー（Prism）"
+  - url: "http://localhost:8080"
+    description: "実サーバー"
+  - url: "http://localhost:3000"
+    description: "フロント（別用途）"
 
-servers: {}
+tags:
+  - name: "users"
+    description: "ユーザーの操作"
+  - name: "posts"
+    description: "記事の操作"
+  - name: "comments"
+    description: "コメント"
 
-tags: {}
+paths:
+  "/users":
+    get:
+      summary: "ユーザー一覧の取得"
+      tags: ["users"]
+      deprecated: false
+      responses:
+        "200":
+          description: "成功"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Users"
 
-paths: {}
+  "/users/{userId}":
+    get:
+      summary: "ユーザーの取得"
+      tags: ["users"]
+      deprecated: false
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: "成功"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
 
-components: {}
+  "/posts/{id}":
+    put:
+      summary: "記事の更新"
+      tags: ["posts"]
+      deprecated: false
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type:string }
+          example: "1"
+        - name: X-Api-key
+          in: header
+          required: true
+          description: "APIキーをヘッダーに付与"
+          schema: { type: string }
+          example: "xxx-xxx-xxx-xxx"
+        - name: token
+          in: cookie
+          description: "アクセストークン"
+          required: true
+          schema: { type: string }
+          example: "xxx-xxx-xxx"
+      responses:
+        "201":
+          description: "成功"
+  "/posts":
+    post:
+      summary: "記事の新規投稿"
+      tags: ["posts"]
+      deprecated: false
+      requestBody:
+        description: "投稿内容"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title: { type: string, example: "タイトル" }
+                content: { type: string, example: "記事本文" }
+      # 成功レスポンス
+      responses:
+        "201":
+          description: "成功"
+        "400":
+          description: "Client side error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: string }
+                  type: { type: string }
+                  message: { type: string }
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field: { type: string }
+                        code: { type: string }
+
+  "/posts/{id}/comments":
+    get:
+      summary: "コメントの一覧取得"
+      tags: ["comments"]
+      deprecated: false
+      parameters:
+        - $ref: "#/components/parameters/CommentId"
+      responses:
+        "200":
+          description: "成功"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Comments"
+    post:
+      summary: "コメントの新規作成"
+      tags: ["comments"]
+      deprecated: false
+      parameters:
+        - $ref: "#/components/parameters/CommentId"
+      security:
+        - apikey_auth: []
+      responses:
+        "200":
+          description: "成功"
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Comments"
+components:
+  schemas:
+    Users:
+      type: array
+      items:
+        type: object
+        properties:
+          id: { type: number, example: 1 }
+          name: { type: string, example: user }
+          address: { type: string, example: test@com }
+
+    User:
+      type: object
+      properties:
+        id: { type: number, example: 1 }
+        name: { type: string, example: user }
+        address: { type: string, example: test@com }
+
+    Comments:
+      type: object
+      properties:
+        comment: { type: string }
+  parameters:
+    CommentId:
+      name: id
+      in: path
+      required: true
+      schema: { type:string }
+      example: "1"
+  # 新規投稿(POST)する時にAPI keyを要求
+  securitySchemes:
+    apikey_auth:
+      description: "API key authorization"
+      type: apiKey
+      in: header
+      name: "X-Api-Key"

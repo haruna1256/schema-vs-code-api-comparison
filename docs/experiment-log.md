@@ -145,10 +145,10 @@ dockerの立ち上げに手間取った
 ---
 
 #### 🧭 実施内容：
-- openapiを書いていく
+- openapiの知識を深める
 
 #### ⌛ 所要時間：
-- 
+- 30
 
 #### 💡 気づき・課題・感想：
 
@@ -187,7 +187,6 @@ string型は下記のフォーマットに分類
 
 
 ```
-
 openapi: 
 
 
@@ -204,15 +203,172 @@ paths: {}
 components: {}
 ```
 
-#### openapi: "3.0.3"
+#### openapi
 - 使用するOpenAPIのバージョン
 
 #### info
+- API自体のメタデータを定義
 |フィールド	|型	|説明|
 |-----|-----|----|
 |title	|string	|APIのタイトル|
 |description	|string|	APIの説明。マークダウンも可能|
 |version	|string	|APIドキュメントのバージョン|
+
+#### servers
+- APIを提供しているサーバーを定義
+
+開発環境や本番環境のURL情報を記載
+
+サーバーは開発環境、本番環境など複数定義する可能性があることからハイフンを利用して配列で表現していく
+
+|フィールド	|型	|説明|
+|----|----|----|
+|url	|string	|APIを提供しているサーバーのURL|
+|description	|string	|提供しているサーバーの情報|
+
+
+```
+openapi: "3.0.3"
+
+info:
+  title: "サンプルAPI"
+  description: "サンプルとして作成したAPIです"
+  version: "1.0.0"
+
+servers:
+- url: "http://localhost:3000"
+  description: "ローカル環境"
+- url: "http://sample.com"
+  description: "本番環境"
+
+```
+
+
+---
+### 2025/05/13 スキーマ詳細
+#### ✅ 手法：
+- OpenAPI 
+
+#### 🧭 実施内容：
+- openapi.yamlの中身
+
+#### ⌛ 所要時間：
+-　
+
+#### 💡 気づき・課題・感想：
+- Swagger Viewerという拡張機能の有用性に気づいた
+
+##### tags
+APIを整理するためのタグを配列で定義することができる。
+
+|フィールド|	型	|説明|
+|---|---|--|
+|name	|string|	タグ名|
+|description|	string	|タグの説明|
+
+
+###### paths
+pathsではAPIとして利用できるパスと操作を定義していきます。
+
+pathsは下記の構成で成り立っています。
+
+メタデータ
+リクエストパラメータ
+リクエストボディー
+レスポンス
+pathsの内容を一つずつ確認していきます。
+
+##### メタデータ
+メタデータの構成は下記です。
+
+|フィールド|	型	|説明|
+|----|----|---|
+|summary|	string	|操作の概要|
+|description	|string	|操作の詳細説明|
+|tags|	[string]	|タグを付与できる|
+|deprecated	|boolean|	廃止になったかを定義する|
+
+
+##### リクエストパラメータ
+リクエストパラメータは下記の構成になっています。
+
+|フィールド|	型|説明|
+|----|----|---|
+|name	|string	|パラメータ名を指定する|
+|in|	string|	パラメータの場所を指定する(query,header,path,cookie)|
+|description	|string	パラメータに関する説明を記載する|
+|required	|boolean	|パラメータが必須かを定義する|
+|schema|	object|	パラメータお型定義をする。JSONスキーマを元にした記述|
+|example	|	サンプルデータを記述|
+
+##### リクエストボディ
+リクエストボディは下記の構成になっています。
+
+|フィールド|	型	|説明|
+|----|-----|----|
+|description	|string|	リクエストボディの説明|
+||required	|boolean	|必須項目の判定|
+|content	|object|	リクエストボディの内容|
+|content.{media}	|object	|メディアタイプをキーにレスポンスボディを定義|
+|content.{media}.schema	|object|	リクエストボディを定義|
+リクエストボディを定義するcontentは下記の構成を持っています。
+
+メディアタイプ(application/json等)
+schemaで型定義
+exampleでサンプルデータを記述
+記事を新規投稿するAPIを作成しながらリクエストボディについて確認していきます。
+
+下記のデータを新規投稿する。
+
+
+##### レスポンス
+レスポンスは下記の構成になっています。
+
+レスポンスはステータスコード毎にオブジェクトを作成していく。成功ステータスは最低限入れるようにする。
+
+|フィールド|	型	|説明|
+|----|---|---|
+|description|	string	|レスポンス内容の説明|
+|headers	|string	|レスポンスのヘッダー(descriptionとschemaを持つ)|
+|content	|object	|具体的に返すデータ|
+
+
+##### commponents
+レスポンスの箇所で使っていたcomponentについて詳しく説明します。
+
+コンポーネントでは下記の6つの要素で成り立っています。
+
+schemas
+parameters
+requestBodies
+responses
+headers
+SecuritySchemas
+componentを参照するときは$refで呼び出します。
+
+記事に対してのコメントを取得と新規作成するAPIを作成しながら確認していきます。
+
+GETでオブジェクト配列型のデータが返ってくる
+POSTで投稿したオブジェクトのデータが返ってくる
+
+
+#### security
+OpenAPIで定義できる認証認可は下記。
+
+|種別|	形式	|説明|
+|---|---|---|
+|http	|Basic	|Basic認証|
+|http|	Bearer|	JWTを利用した認可|
+|apikey|	header|	APIkeyを利用した認可|
+|apikey	|cookie	|ログインセッション|
+|oauth2|	-	|OAuth2.0|
+セキュリティーはコンポーネントに定義していきます。
+
+Securityschemes
+セキュリティースキームの名前
+スキームの説明
+種別
+スキーマの定義
 
 
 ---
