@@ -31,7 +31,7 @@ services:
     volumes:
       - ./src/openapi/api/openapi.yaml:/src/openapi/api/openapi.yaml:ro
     ports:
-      - '4010:4010'
+      - '3001:4010'
 
 networks:
   app-network:
