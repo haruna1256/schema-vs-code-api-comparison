@@ -5,10 +5,48 @@ info:
   # APIのタイトル
   title: "openapiのAPI"
   # APIの説明
-  description: "openapiを使って作成したAPIです"
+  description: "openapiを使って作成した本のAPIです"
   # APIのバージョン
   version: "1.0.0"
 
+servers:
+  - url: "http://localhost:3001"
+    description: "モックサーバー（Prism）"
+  - url: "http://localhost:8080"
+    description: "実サーバー"
 
 
+
+
+paths: {}
+
+
+
+
+
+
+# OpenAPIの「部品」セクション。再利用可能な定義（スキーマ、レスポンスなど）をここにまとめる。
+components:
+  # スキーマ（データ構造）を定義する
+  schemas:
+    Books:
+      # スキーマを定義、配列型として定義
+      type: array
+      # 配列の中身（各要素）の型を定義
+      items: 
+        # 各要素はオブジェクト型
+        type: object
+        # オブジェクトが持つプロパティ（フィールド）を定義
+        properties:
+          "id": {type: string, example: "a13f9c6d-b849-442a-b3d4-fb05c221d2a9"}
+          "title": {type: string, example: "本のタイトル"}
+          "author": {type: string, example: "著者名"}
+          "memo": {type: string, example: "感想やメモ（任意）"}
+          "status": {type: string, enum: [unread, reading, done], example: "unread"}
+          "tags": {type: array, example: ["小説", "エッセイ"]}
+          "startedAt": {type: string, format: date, example: "2024-04-24"}
+          "finishdAt": {type: string, format: date, example: "2024-04-25"}
+          "createdAt": {type: string, format: date, example: "2024-04-24"}
+  
+    
   
