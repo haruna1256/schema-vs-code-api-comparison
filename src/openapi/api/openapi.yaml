@@ -30,6 +30,7 @@ paths:
   # APIのエンドポイント（パス）を定義
   "/books":
     # HTTPのメソットの定義
+    # 本の一覧取得
     get:
       # エンドポイントの簡単な説明
       # ドキュメント表示用に使用
@@ -54,6 +55,26 @@ paths:
                 # スキーマ定義を再利用している
                 # 参照先
                 $ref: "#/components/schemas/Books"
+    # 本の新規登録
+    post:
+      summary: "本の新規登録"
+      tags: ["books"]
+      deprecated: false
+      # リクエストで送る本体部分（JSONなど）を定義する
+      requestBody:
+        # 何を表しているかの説明
+        description: "本の内容"
+        # 必須かどうか
+        required: true
+        # 受け取る内容
+        content:
+          # JSON形式のデータを受け取る
+          application/json:
+            # 受け取るデータはオブジェクト（連想配列）である
+            schema:
+              $ref:"#/components/schemas/Book"
+
+    
 
   # 特定の本の詳細取得
   "/books/{id}":
@@ -63,8 +84,8 @@ paths:
       deprecated: false
       # パラメータ
       parameters:
-          # userId という名前の パスパラメータを定義。
-        - name: userId
+          # Id という名前の パスパラメータを定義。
+        - name: Id
           # in: path → パス内に含まれる変数。
           in: path
           # required: true → 必須パラメータ。
@@ -77,7 +98,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Books"
+                $ref: "#/components/schemas/Book"
+
+    
+
+
+
+
+
+
 
                 
 
@@ -98,28 +127,76 @@ paths:
 
 
 
-# OpenAPIの「部品」セクション。再利用可能な定義（スキーマ、レスポンスなど）をここにまとめる。
 components:
-  # スキーマ（データ構造）を定義する
   schemas:
+    Book:
+      type: object
+      description: "本の情報を表すオブジェクト"
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "a13f9c6d-b849-442a-b3d4-fb05c221d2a9"
+          description: "一意な識別子"
+          # 本の一意なID。UUID形式推奨。
+        title:
+          type: string
+          example: "本のタイトル"
+          description: "書籍のタイトル"
+          # 本のタイトル（必須）
+        author:
+          type: string
+          example: "著者名"
+          description: "著者名"
+          # 著者名（必須）
+        memo:
+          type: string
+          nullable: true
+          example: "感想やメモ（任意）"
+          description: "感想やメモ（任意）"
+          # 読書メモや感想など、任意のテキスト
+        status:
+          type: string
+          enum: [unread, reading, done]
+          example: "unread"
+          default: "unread"
+          description: "読書状況"
+          # 読書の進捗状態。必須。未読/読書中/読了
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["小説", "エッセイ"]
+          description: "タグリスト（ジャンルなど）"
+          # 本に付けるタグのリスト（例：ジャンルなど）
+        startedAt:
+          type: string
+          format: date
+          nullable: true
+          example: "2024-04-24"
+          description: "読み始めた日（任意）"
+          # 読み始めた日。日付フォーマット、任意
+        finishedAt:
+          type: string
+          format: date
+          nullable: true
+          example: "2024-04-25"
+          description: "読み終えた日（任意）"
+          # 読み終えた日。日付フォーマット、任意
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-04-24T15:30:00Z"
+          description: "登録日時"
+          # レコード登録日時。日時フォーマット
+      required:
+        - title
+        - author
+        - status
+        # title, author, statusは必須
+
     Books:
-      # スキーマを定義、配列型として定義
       type: array
-      # 配列の中身（各要素）の型を定義
-      items: 
-        # 各要素はオブジェクト型
-        type: object
-        # オブジェクトが持つプロパティ（フィールド）を定義
-        properties:
-          "id": {type: string, example: "a13f9c6d-b849-442a-b3d4-fb05c221d2a9"}
-          "title": {type: string, example: "本のタイトル"}
-          "author": {type: string, example: "著者名"}
-          "memo": {type: string, example: "感想やメモ（任意）"}
-          "status": {type: string, enum: [unread, reading, done], example: "unread"}
-          "tags": {type: array, example: ["小説", "エッセイ"]}
-          "startedAt": {type: string, format: date, example: "2024-04-24"}
-          "finishdAt": {type: string, format: date, example: "2024-04-25"}
-          "createdAt": {type: string, format: date, example: "2024-04-24"}
-  
-    
-  
+      items:
+        $ref: '#/components/schemas/Book'
+      # 複数のBookオブジェクトを格納する配列
