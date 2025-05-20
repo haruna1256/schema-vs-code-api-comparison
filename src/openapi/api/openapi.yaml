@@ -55,6 +55,7 @@ paths:
                 # スキーマ定義を再利用している
                 # 参照先
                 $ref: "#/components/schemas/Books"
+
     # 本の新規登録
     post:
       summary: "本の新規登録"
@@ -72,9 +73,45 @@ paths:
           application/json:
             # 受け取るデータはオブジェクト（連想配列）である
             schema:
-              $ref:"#/components/schemas/Book"
+              $ref: "#/components/schemas/Book"
 
-    
+      responses:
+        "201":
+          description: "作成成功"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        # HTTPステータスコード 400 Bad Request
+        # → リクエストの形式が正しくない、バリデーションエラーなどの場合
+        "400":
+          description: "Client side error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "400"
+                  type:
+                    type: string
+                    example: "BadRequest"
+                  message:
+                    type: string
+                    example: "titleは必須です"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: "title"
+                        code:
+                          type: string
+                          example: "required"
+
 
   # 特定の本の詳細取得
   "/books/{id}":
@@ -84,8 +121,8 @@ paths:
       deprecated: false
       # パラメータ
       parameters:
-          # Id という名前の パスパラメータを定義。
-        - name: Id
+          # id という名前の パスパラメータを定義。
+        - name: id
           # in: path → パス内に含まれる変数。
           in: path
           # required: true → 必須パラメータ。
