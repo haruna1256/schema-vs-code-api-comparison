@@ -60,10 +60,7 @@ schema-vs-code-api-comparison/
 │   └── code-first/      # コードファーストのテスト
 ├── scripts/             # 開発用スクリプト（サーバ起動など）
 │   └── start-server.js  # サーバー起動スクリプト
-├── .github/             # GitHub ActionsなどのCI/CD設定
-│   └── workflows/
-│       └── ci.yml       # CI/CDの設定
-├── LICENSE              # ライセンス情報
+|
 ├── README.md            # プロジェクト概要や使い方
 └── package.json         # Node.jsの依存関係など
 
