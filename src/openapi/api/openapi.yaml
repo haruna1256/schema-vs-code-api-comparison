@@ -15,7 +15,6 @@ servers:
   - url: "http://localhost:8080"
     description: "実サーバー"
 
-
 # 全体のタグ一覧
 # ここで定義されたタグは、各エンドポイント（paths内）に付けられる
 tags:
@@ -26,7 +25,7 @@ tags:
     description: "本情報の操作"
 
 # エンドポイント一覧
-paths: 
+paths:
   # APIのエンドポイント（パス）を定義
   "/books":
     # HTTPのメソットの定義
@@ -112,23 +111,22 @@ paths:
                           type: string
                           example: "required"
 
-
-  # 特定の本の詳細取得
   "/books/{id}":
+    # 特定の本の詳細取得
     get:
       summary: "特定の本の詳細取得"
       tags: ["books"]
       deprecated: false
       # パラメータ
       parameters:
-          # id という名前の パスパラメータを定義。
+        # id という名前の パスパラメータを定義。
         - name: id
           # in: path → パス内に含まれる変数。
           in: path
           # required: true → 必須パラメータ。
           required: true
           # type: string → ユーザーIDは文字列型。
-          schema: {type: string}
+          schema: { type: string }
       responses:
         "200":
           description: "成功"
@@ -137,32 +135,102 @@ paths:
               schema:
                 $ref: "#/components/schemas/Book"
 
-    
+    # 特定の本の更新
+    put:
+      summary: "特定の本の更新"
+      tags: ["books"]
+      deprecated: false
+      parameters:
+        # id という名前の パスパラメータを定義。
+        - name: id
+          # in: path → パス内に含まれる変数。
+          in: path
+          # required: true → 必須パラメータ。
+          required: true
+          # type: string → ユーザーIDは文字列型。
+          schema: { type: string }
+      requestBody:
+        description: "変更する本の情報"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Book"
+      responses:
+        "200":
+          description: "更新成功"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "400":
+          description: "リクエスト不正"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "400"
+                  type:
+                    type: string
+                    example: "BadRequest"
+                  message:
+                    type: string
+                    example: "titleは必須です"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: "title"
+                        code:
+                          type: string
+                          example: "required"
+        "404":
+          description: "指定されたIDの本が存在しない"
 
+    # 特定の本を削除
+    delete:
+      summary: "特定の本を削除"
+      tags: ["books"]
+      deprecated: false
+      # 消す本の判断材料
+      # idのみでいい
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: "削除成功。内容はなし"
+        "404":
+          description: "指定されたIDの本が存在しない"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "404"
+                  type:
+                    type: string
+                    example: "NotFound"
+                  message:
+                    type: string
+                    example: "指定されたIDの本は存在しません"
 
-
-
-
-
-
-                
-
-
-
-# 本の新規登録 -> POST /books
-
-# 特定の本の情報を更新 -> PUT /books/{id}
-
-# 特定の本を削除 -> DELETE /books/{id}
+# 一旦この下の二つはまた後ででいい
 
 # 特定の本をステータスでの絞り込み -> GET /books?status=done
 
 # 特定の本をタグでの絞り込み -> GET /books?tags=小説
-
-
-
-
-
 
 components:
   schemas:
@@ -235,5 +303,5 @@ components:
     Books:
       type: array
       items:
-        $ref: '#/components/schemas/Book'
+        $ref: "#/components/schemas/Book"
       # 複数のBookオブジェクトを格納する配列
