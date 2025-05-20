@@ -424,4 +424,56 @@ Securityschemes
 - node.jsの時間にしてたからかな
 - /booksで同じの時getpostは同じ場所に書くべきだった
 
+# VSCodeでのOpenAPI + Swaggerviewerの使い方・メリットまとめ
+
+---
+
+## swaggerviewer:openapi の役割
+
+- **OpenAPI仕様チェックが自動で行われる**  
+  → 書いたAPI定義（openapi.yaml）が正しい形式かどうか、エラーや警告がすぐわかる。  
+  → 例：「必須項目が抜けてる」「型が間違ってる」などのミスを早期発見できる。
+
+- **補完（オートコンプリート）が効く**  
+  → YAMLを書くときに、使えるキーや値の候補を自動で出してくれるから書きやすくなる。
+
+- **Swaggerviewerなどの拡張機能と連携しやすくなる**  
+  → SwaggerviewerはOpenAPIをわかりやすく見るためのツールで、VSCode内でプレビューや検証がスムーズにできる。
+
+---
+
+## VSCodeでのOpenAPI + Swaggerviewerの使い方例
+
+1. **OpenAPIのYAMLを作成・編集する**
+
+   ```yaml
+   openapi: 3.0.3
+   info:
+     title: サンプルAPI
+     version: 1.0.0
+   paths:
+     /books:
+       get:
+         summary: 本一覧を取得
+         responses:
+           '200':
+             description: 正常終了
+             
+- APIの仕様を書いていく  
+  → VSCodeが補完を出してくれるので、書き間違いが減る。
+
+- Swaggerviewer拡張でAPIの見た目を確認  
+  → VSCodeのSwaggerviewer拡張を開く  
+  → 先ほど作ったYAMLファイルを指定（`yaml.schemas`設定が役立つ）  
+  → ブラウザのようにAPI仕様をきれいに見られる。
+
+- モックサーバーを使って動作確認も可能  
+  → Prismなどのモックサーバーを設定すれば、API仕様通りのレスポンスを返すテスト環境が作れる。  
+  → フロントエンドや他のチームメンバーがAPI仕様に合わせて動作確認しやすくなる。
+
+- 開発中にエラーや警告をリアルタイムチェック  
+  → YAMLの書き方に問題があれば、VSCodeがすぐ教えてくれる。  
+  → 例：「パスの記述がおかしい」「必須項目がない」など。
+
+
 ーーー
