@@ -16,9 +16,64 @@ servers:
     description: "実サーバー"
 
 
+# 全体のタグ一覧
+# ここで定義されたタグは、各エンドポイント（paths内）に付けられる
+tags:
+  # タグの名前
+  # 指定することで、「これは本関連の処理です」と分類
+  - name: "books"
+    # 何を意味するかの説明
+    description: "本情報の操作"
+
+# エンドポイント一覧
+paths: 
+  # APIのエンドポイント（パス）を定義
+  "/books":
+    # HTTPのメソットの定義
+    get:
+      # エンドポイントの簡単な説明
+      # ドキュメント表示用に使用
+      summary: "本の一覧の取得"
+      # タグ
+      tags: ["books"]
+      # このAPIが非推奨（deprecated）かどうかを示す。
+      # ここでは false なので、まだ正式に使えるAPI。
+      deprecated: false
+      # レスポンス（返却内容）を定義
+      responses:
+        # ステータスコード
+        "200":
+          # ステータスコード 200 の説明
+          description: "成功"
+          # レスポンスの中身（Content-Type）を定義
+          content:
+            # レスポンスは JSON形式 で返される
+            application/json:
+              # レスポンスボディのデータ構造（スキーマ）を指定
+              schema:
+                # スキーマ定義を再利用している
+                # 参照先
+                $ref: "#/components/schemas/Books"
 
 
-paths: {}
+
+
+
+
+
+
+
+# 特定の本の詳細取得 -> GET /books/{id}
+
+# 本の新規登録 -> POST /books
+
+# 特定の本の情報を更新 -> PUT /books/{id}
+
+# 特定の本を削除 -> DELETE /books/{id}
+
+# 特定の本をステータスでの絞り込み -> GET /books?status=done
+
+# 特定の本をタグでの絞り込み -> GET /books?tags=小説
 
 
 
