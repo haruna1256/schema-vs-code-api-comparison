@@ -1,8 +1,12 @@
 openapi: "3.0.3"
 
+# API自体のメタデータを定義
 info:
-  title: "テスト"
-  description: "テストで作成するAPIです。"
+  # APIのタイトル
+  title: "openapiのAPI"
+  # APIの説明
+  description: "openapiを使って作成した本のAPIです"
+  # APIのバージョン
   version: "1.0.0"
 
 servers:
@@ -10,94 +14,75 @@ servers:
     description: "モックサーバー（Prism）"
   - url: "http://localhost:8080"
     description: "実サーバー"
-  - url: "http://localhost:3000"
-    description: "フロント（別用途）"
 
+# 全体のタグ一覧
+# ここで定義されたタグは、各エンドポイント（paths内）に付けられる
 tags:
-  - name: "users"
-    description: "ユーザーの操作"
-  - name: "posts"
-    description: "記事の操作"
-  - name: "comments"
-    description: "コメント"
+  # タグの名前
+  # 指定することで、「これは本関連の処理です」と分類
+  - name: "books"
+    # 何を意味するかの説明
+    description: "本情報の操作"
 
+# エンドポイント一覧
 paths:
-  "/users":
+  # APIのエンドポイント（パス）を定義
+  "/books":
+    # HTTPのメソットの定義
+    # 本の一覧取得
     get:
-      summary: "ユーザー一覧の取得"
-      tags: ["users"]
+      # エンドポイントの簡単な説明
+      # ドキュメント表示用に使用
+      summary: "本の一覧の取得"
+      # タグ
+      tags: ["books"]
+      # このAPIが非推奨（deprecated）かどうかを示す。
+      # ここでは false なので、まだ正式に使えるAPI。
       deprecated: false
+      # レスポンス（返却内容）を定義
       responses:
+        # ステータスコード
         "200":
+          # ステータスコード 200 の説明
           description: "成功"
+          # レスポンスの中身（Content-Type）を定義
           content:
+            # レスポンスは JSON形式 で返される
             application/json:
+              # レスポンスボディのデータ構造（スキーマ）を指定
               schema:
-                $ref: "#/components/schemas/Users"
+                # スキーマ定義を再利用している
+                # 参照先
+                $ref: "#/components/schemas/Books"
 
-  "/users/{userId}":
-    get:
-      summary: "ユーザーの取得"
-      tags: ["users"]
-      deprecated: false
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema: { type: string }
-      responses:
-        "200":
-          description: "成功"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/User"
-
-  "/posts/{id}":
-    put:
-      summary: "記事の更新"
-      tags: ["posts"]
-      deprecated: false
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema: { type:string }
-          example: "1"
-        - name: X-Api-key
-          in: header
-          required: true
-          description: "APIキーをヘッダーに付与"
-          schema: { type: string }
-          example: "xxx-xxx-xxx-xxx"
-        - name: token
-          in: cookie
-          description: "アクセストークン"
-          required: true
-          schema: { type: string }
-          example: "xxx-xxx-xxx"
-      responses:
-        "201":
-          description: "成功"
-  "/posts":
+    # 本の新規登録
     post:
-      summary: "記事の新規投稿"
-      tags: ["posts"]
+      summary: "本の新規登録"
+      tags: ["books"]
       deprecated: false
+      # リクエストで送る本体部分（JSONなど）を定義する
       requestBody:
-        description: "投稿内容"
+        # 何を表しているかの説明
+        description: "本の内容"
+        # 必須かどうか
         required: true
+        # 受け取る内容
         content:
+          # JSON形式のデータを受け取る
           application/json:
+            # 受け取るデータはオブジェクト（連想配列）である
             schema:
-              type: object
-              properties:
-                title: { type: string, example: "タイトル" }
-                content: { type: string, example: "記事本文" }
-      # 成功レスポンス
+              $ref: "#/components/schemas/Book"
+
       responses:
         "201":
-          description: "成功"
+          description: "作成成功"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        # HTTPステータスコード 400 Bad Request
+        # → リクエストの形式が正しくない、バリデーションエラーなどの場合
         "400":
           description: "Client side error"
           content:
@@ -105,82 +90,219 @@ paths:
               schema:
                 type: object
                 properties:
-                  code: { type: string }
-                  type: { type: string }
-                  message: { type: string }
+                  code:
+                    type: string
+                    example: "400"
+                  type:
+                    type: string
+                    example: "BadRequest"
+                  message:
+                    type: string
+                    example: "titleは必須です"
                   errors:
                     type: array
                     items:
                       type: object
                       properties:
-                        field: { type: string }
-                        code: { type: string }
+                        field:
+                          type: string
+                          example: "title"
+                        code:
+                          type: string
+                          example: "required"
 
-  "/posts/{id}/comments":
+  "/books/{id}":
+    # 特定の本の詳細取得
     get:
-      summary: "コメントの一覧取得"
-      tags: ["comments"]
+      summary: "特定の本の詳細取得"
+      tags: ["books"]
       deprecated: false
+      # パラメータ
       parameters:
-        - $ref: "#/components/parameters/CommentId"
+        # id という名前の パスパラメータを定義。
+        - name: id
+          # in: path → パス内に含まれる変数。
+          in: path
+          # required: true → 必須パラメータ。
+          required: true
+          # type: string → ユーザーIDは文字列型。
+          schema: { type: string }
       responses:
         "200":
           description: "成功"
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Comments"
-    post:
-      summary: "コメントの新規作成"
-      tags: ["comments"]
+                $ref: "#/components/schemas/Book"
+
+    # 特定の本の更新
+    put:
+      summary: "特定の本の更新"
+      tags: ["books"]
       deprecated: false
       parameters:
-        - $ref: "#/components/parameters/CommentId"
-      security:
-        - apikey_auth: []
+        # id という名前の パスパラメータを定義。
+        - name: id
+          # in: path → パス内に含まれる変数。
+          in: path
+          # required: true → 必須パラメータ。
+          required: true
+          # type: string → ユーザーIDは文字列型。
+          schema: { type: string }
+      requestBody:
+        description: "変更する本の情報"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Book"
       responses:
         "200":
-          description: "成功"
+          description: "更新成功"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "400":
+          description: "リクエスト不正"
           content:
             application/json:
               schema:
                 type: object
-                $ref: "#/components/schemas/Comments"
+                properties:
+                  code:
+                    type: string
+                    example: "400"
+                  type:
+                    type: string
+                    example: "BadRequest"
+                  message:
+                    type: string
+                    example: "titleは必須です"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: "title"
+                        code:
+                          type: string
+                          example: "required"
+        "404":
+          description: "指定されたIDの本が存在しない"
+
+    # 特定の本を削除
+    delete:
+      summary: "特定の本を削除"
+      tags: ["books"]
+      deprecated: false
+      # 消す本の判断材料
+      # idのみでいい
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: "削除成功。内容はなし"
+        "404":
+          description: "指定されたIDの本が存在しない"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "404"
+                  type:
+                    type: string
+                    example: "NotFound"
+                  message:
+                    type: string
+                    example: "指定されたIDの本は存在しません"
+
+# 一旦この下の二つはまた後ででいい
+
+# 特定の本をステータスでの絞り込み -> GET /books?status=done
+
+# 特定の本をタグでの絞り込み -> GET /books?tags=小説
+
 components:
   schemas:
-    Users:
+    Book:
+      type: object
+      description: "本の情報を表すオブジェクト"
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "a13f9c6d-b849-442a-b3d4-fb05c221d2a9"
+          description: "一意な識別子"
+          # 本の一意なID。UUID形式推奨。
+        title:
+          type: string
+          example: "本のタイトル"
+          description: "書籍のタイトル"
+          # 本のタイトル（必須）
+        author:
+          type: string
+          example: "著者名"
+          description: "著者名"
+          # 著者名（必須）
+        memo:
+          type: string
+          nullable: true
+          example: "感想やメモ（任意）"
+          description: "感想やメモ（任意）"
+          # 読書メモや感想など、任意のテキスト
+        status:
+          type: string
+          enum: [unread, reading, done]
+          example: "unread"
+          default: "unread"
+          description: "読書状況"
+          # 読書の進捗状態。必須。未読/読書中/読了
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["小説", "エッセイ"]
+          description: "タグリスト（ジャンルなど）"
+          # 本に付けるタグのリスト（例：ジャンルなど）
+        startedAt:
+          type: string
+          format: date
+          nullable: true
+          example: "2024-04-24"
+          description: "読み始めた日（任意）"
+          # 読み始めた日。日付フォーマット、任意
+        finishedAt:
+          type: string
+          format: date
+          nullable: true
+          example: "2024-04-25"
+          description: "読み終えた日（任意）"
+          # 読み終えた日。日付フォーマット、任意
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-04-24T15:30:00Z"
+          description: "登録日時"
+          # レコード登録日時。日時フォーマット
+      required:
+        - title
+        - author
+        - status
+        # title, author, statusは必須
+
+    Books:
       type: array
+      description: "複数のBookオブジェクトを格納する配列"
       items:
-        type: object
-        properties:
-          id: { type: number, example: 1 }
-          name: { type: string, example: user }
-          address: { type: string, example: test@com }
-
-    User:
-      type: object
-      properties:
-        id: { type: number, example: 1 }
-        name: { type: string, example: user }
-        address: { type: string, example: test@com }
-
-    Comments:
-      type: object
-      properties:
-        comment: { type: string }
-  parameters:
-    CommentId:
-      name: id
-      in: path
-      required: true
-      schema: { type:string }
-      example: "1"
-  # 新規投稿(POST)する時にAPI keyを要求
-  securitySchemes:
-    apikey_auth:
-      description: "API key authorization"
-      type: apiKey
-      in: header
-      name: "X-Api-Key"
+        $ref: "#/components/schemas/Book"
+      # 複数のBookオブジェクトを格納する配列
