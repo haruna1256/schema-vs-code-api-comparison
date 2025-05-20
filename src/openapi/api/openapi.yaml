@@ -55,15 +55,33 @@ paths:
                 # 参照先
                 $ref: "#/components/schemas/Books"
 
+  # 特定の本の詳細取得
+  "/books/{id}":
+    get:
+      summary: "特定の本の詳細取得"
+      tags: ["books"]
+      deprecated: false
+      # パラメータ
+      parameters:
+          # userId という名前の パスパラメータを定義。
+        - name: userId
+          # in: path → パス内に含まれる変数。
+          in: path
+          # required: true → 必須パラメータ。
+          required: true
+          # type: string → ユーザーIDは文字列型。
+          schema: {type: string}
+      responses:
+        "200":
+          description: "成功"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Books"
+
+                
 
 
-
-
-
-
-
-
-# 特定の本の詳細取得 -> GET /books/{id}
 
 # 本の新規登録 -> POST /books
 
