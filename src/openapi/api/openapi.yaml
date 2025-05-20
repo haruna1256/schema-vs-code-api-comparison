@@ -302,6 +302,7 @@ components:
 
     Books:
       type: array
+      description: "複数のBookオブジェクトを格納する配列"
       items:
         $ref: "#/components/schemas/Book"
       # 複数のBookオブジェクトを格納する配列
