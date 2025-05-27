@@ -62,6 +62,6 @@ schema-vs-code-api-comparison/
 │   └── start-server.js  # サーバー起動スクリプト
 |
 ├── README.md            # プロジェクト概要や使い方
-└── package.json         # Node.jsの依存関係など
+└── .gitignore           # gitにあげないものを記述
 
 
