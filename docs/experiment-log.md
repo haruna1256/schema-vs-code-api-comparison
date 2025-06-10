@@ -477,3 +477,197 @@ Securityschemes
 
 
 ーーー
+### 2025-05-29 grpcの理解
+
+#### ✅ 手法：
+- grpc
+
+#### 🧭 実施内容：
+- 勉強
+
+#### ⌛ 所要時間：
+- 約1時間
+
+#### 💡 気づき・課題・感想：
+- gRPCのスキーマ定義はProtocol Buffersと呼ばれるインタフェース定義言語（IDL）によって記述されます。Protocol Buffersの例は次のようなものになります。
+```
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+message HelloRequest {
+  string name = 1;
+}
+message HelloReply {
+  string message = 1;
+}
+```
+
+[参考サイト]
+(https://medium.com/sprocket-inc/grpc%E3%81%AE%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E%E8%A8%AD%E8%A8%88%E3%81%8A%E3%82%88%E3%81%B3%E5%AE%9F%E8%A3%85%E3%81%AE%E3%83%99%E3%82%B9%E3%83%88%E3%83%97%E3%83%A9%E3%82%AF%E3%83%86%E3%82%A3%E3%82%B9-c0599edcb6f7)
+
+gRPCでは1つのRPC定義をメソッドと呼び、記述方法もプログラミング言語でよく見られるメソッド定義のような見た目となっています。
+
+* リクエストのリトライ処理をシンプルに保てる。
+* 分散システムによるリクエストの重複を考慮する必要がなくなる。
+
+Protocol Buffersにはデータ型としてenumがサポートされています。enum型を定義する際のベストプラクティスは以下があります。
+* UNSPECIFIEDを0番目の要素として用意する。
+* enumの各要素の名前はパッケージ内において一意にする。
+```enum Color {
+  COLOR_UNSPECIFIED = 0;  // Default value
+  COLOR_RED = 1;
+  COLOR_GREEN = 2;
+  COLOR_BLUE = 3;
+}
+```
+通常null=0
+enum 
+最初の要素がデフォルトに
+エラーが出ないようデフォルト値を指定しておく
+
+gRPCサーバーをGo言語で実装する場合の注意点として、メッセージからフィールドを取り出す際にGetterメソッドを使用してnil-safeにするというものがあります。Getterメソッドを使用せずにフィールドを取り出すと意図せずnil pointer dereferenceによるpanicを発生させてしまう場合があります。以下のようなメッセージを考えます。
+
+```
+message Request {
+  Entry entry = 1;
+}
+message Entry {
+  string title = 1;
+  string body = 2;
+}
+```
+```struct Request {
+  Entry *Entry
+}
+struct Entry {
+  Title string
+  Body  string
+}```
+```func (x *Request) GetEntry() *Entry {
+  if x != nil {
+    return x.Entry
+  }
+  return nil
+}
+func (x *Entry) GetTitle() string {
+  if x != nil {
+    return x.Title
+  }
+  return ""
+}```
+
+[参考サイト](https://qiita.com/HitoroOhria/items/a4e06a3e7e8c8dfef4df)
+
+gRPC とは何か？
+gRPC とは、以下の2つを実現する RPC フレームワークである。
+
+* 高速な API 通信
+* スキーマ駆動家初
+現在、マイクロサービス間の内部通信の実現方法として有力視されている。
+
+gRPC の長所は何か？
+① HTTP/2 による高速通信
+gRPC では HTTP/2 を採用しており、 HTTP/1.1 を採用する REST よりも高速である。
+HTTP/2 ではデータ形式はバイナリであり、コネクションの接続・切断を都度行わなくて良い点が特徴である。
+
+② スキーマ駆動開発による高生産性
+gRPC では Protocol Buffers を採用している。
+Protocol Buffers ではスキーマを定義し、コードを自動生成する。
+
+スキーマ定義 → 自動生成の仕組みにより、API ドキュメントの管理が不要となる。
+スキーマ = API ドキュメントとなるためである。
+
+クラアントがサービスを利用したい場合、スキーマを見ればすべて書いてある。
+バックエンドがサービスを追加・変更したい場合、スキーマを書けばコードを自動生成できる。
+
+
+(.proto ファイルの書き方)[https://qiita.com/HitoroOhria/items/b3f64e072e94e99cb554]
+Protocol Buffers では、スキーマは *.proto というファイルに独自の IDL で記述する。
+```syntax = "proto3";
+
+package myapp;
+
+service AddressBookService {
+  rpc Search (SearchRequest) returns (SearchResponse);
+}
+
+message SearchRequest {
+  string name = 1;
+}
+
+message SearchResponse {
+  Person person = 1;
+}
+
+message Person {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+}```
+gRPC サーバー実装
+Go を利用する場合、以下の3つのパッケージが必要である。
+
+コンパイラ
+protoc
+コードジェネレータ
+protoc-gen-go
+protoc-gen-go-grpc
+
+ 言語非依存のRPCフレームワークで、以下のような多くのプログラミング言語に対応
+
+インストール
+
+brew install protobuf
+```
+---
+
+### 2025-06-10 grpc
+
+#### ✅ 手法：
+- grpc
+
+#### 🧭 実施内容：
+- 
+
+#### ⌛ 所要時間：
+- 
+
+#### 💡 気づき・課題・感想：
+- .proto ファイルは gRPCの“契約書”`
+あなたとマシンとが交わす「約束ごと」——言うなれば技術の書状
+- 設計図（proto）をもとに、プログラムの“部品”を自動生成
+
+###### コードを生み出す「protoc」の導入
+# 1. Protocol Buffers コンパイラ（protoc）をインストール
+brew install protobuf
+
+# 2. GoのgRPCプラグインを導入
+go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+
+# 3. $PATH にGoのbinパスを通す（まだであれば）
+export PATH="$PATH:$(go env GOPATH)/bin"
+
+「取得する」と「返す」の違い
+取得する は、あなた（クライアント）がサーバーに「データをください」ってリクエストを送ること
+
+返す は、サーバーが「はい、これが requested データですよ」ってレスポンスを返すこと
+```
+rpc GetBook(GetBookRequest) returns (GetBookResponse);
+```
+
+* GetBookRequest → クライアントが「どの本が欲しいか」指定するデータ
+
+* GetBookResponse → サーバーが「これがその本ですよ」って返すデータ
+
+「クライアントが本のIDを指定して（取得をリクエスト）、サーバーがその本の詳細情報を返す」
+
+クライアント側は「こういう情報ほしいよ！」ってリクエストを作って送る
+
+サーバー側は「はい、これが欲しい情報ですよ！」ってレスポンスを返す
+
+このやりとりのルール（インターフェース）を .proto で定義
+だから
+.proto ファイルは「どんなメッセージをやりとりするか」や「どんなRPCメソッドがあるか」を決めている場所
+
+実際にその定義をもとに、クライアントもサーバーもGoのコードとか他の言語のコードに自動変換（コード生成）して使う
