@@ -5,7 +5,8 @@ syntax = "proto3";
 // コード生成のときに名前空間の役割
 package book;
 // Go言語用のパッケージ設定
-import "github.com/haruna1256/schema-vs-code-api-comparison/proto/book;book";
+option go_package = "github.com/haruna1256/schema-vs-code-api-comparison/proto/book;book";
+
 
 // ここからは「Book」というメッセージ（データ構造）を定義する部分
 message Book {
