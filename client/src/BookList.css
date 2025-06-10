@@ -1,0 +1,25 @@
+.book-list {
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.book-card {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.book-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+}
+
+.book-author,
+.book-status {
+  color: #555;
+  margin: 0.2rem 0;
+}
