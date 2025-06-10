@@ -612,3 +612,62 @@ protoc
 コードジェネレータ
 protoc-gen-go
 protoc-gen-go-grpc
+
+ 言語非依存のRPCフレームワークで、以下のような多くのプログラミング言語に対応
+
+インストール
+
+brew install protobuf
+```
+---
+
+### 2025-06-10 grpc
+
+#### ✅ 手法：
+- grpc
+
+#### 🧭 実施内容：
+- 
+
+#### ⌛ 所要時間：
+- 
+
+#### 💡 気づき・課題・感想：
+- .proto ファイルは gRPCの“契約書”`
+あなたとマシンとが交わす「約束ごと」——言うなれば技術の書状
+- 設計図（proto）をもとに、プログラムの“部品”を自動生成
+
+###### コードを生み出す「protoc」の導入
+# 1. Protocol Buffers コンパイラ（protoc）をインストール
+brew install protobuf
+
+# 2. GoのgRPCプラグインを導入
+go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+
+# 3. $PATH にGoのbinパスを通す（まだであれば）
+export PATH="$PATH:$(go env GOPATH)/bin"
+
+「取得する」と「返す」の違い
+取得する は、あなた（クライアント）がサーバーに「データをください」ってリクエストを送ること
+
+返す は、サーバーが「はい、これが requested データですよ」ってレスポンスを返すこと
+```
+rpc GetBook(GetBookRequest) returns (GetBookResponse);
+```
+
+* GetBookRequest → クライアントが「どの本が欲しいか」指定するデータ
+
+* GetBookResponse → サーバーが「これがその本ですよ」って返すデータ
+
+「クライアントが本のIDを指定して（取得をリクエスト）、サーバーがその本の詳細情報を返す」
+
+クライアント側は「こういう情報ほしいよ！」ってリクエストを作って送る
+
+サーバー側は「はい、これが欲しい情報ですよ！」ってレスポンスを返す
+
+このやりとりのルール（インターフェース）を .proto で定義
+だから
+.proto ファイルは「どんなメッセージをやりとりするか」や「どんなRPCメソッドがあるか」を決めている場所
+
+実際にその定義をもとに、クライアントもサーバーもGoのコードとか他の言語のコードに自動変換（コード生成）して使う

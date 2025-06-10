@@ -1,0 +1,66 @@
+
+// 使うProtobufのバージョン
+syntax = "proto3";
+// パッケージ名を決めてる。
+// コード生成のときに名前空間の役割
+package book;
+// Go言語用のパッケージ設定
+import "github.com/haruna1256/schema-vs-code-api-comparison/proto/book;book";
+
+// ここからは「Book」というメッセージ（データ構造）を定義する部分
+message Book {
+  // 書籍のユニークID（UUID形式を想定）
+  string id = 1;
+
+  // 書名
+  string title = 2;
+
+  // 著者名
+  string author = 3;
+
+  // 読んだ感想やメモ（任意）
+  string memo = 4;
+
+  // 読書状況。unread / reading / done のいずれかを文字列で管理
+  string status = 5;
+
+  // タグやジャンルのリスト。複数あるので repeated を使う（配列）
+  repeated string tags = 6;
+
+  // 読み始めた日。ISO 8601形式の日付文字列（例: 2024-04-24）
+  string startedAt = 7;
+
+  // 読み終えた日。ISO 8601形式の日付文字列
+  string finishedAt = 8;
+
+  // データ作成日時。システムで管理する想定
+  string createdAt = 9;
+}
+
+// 1冊の本をID指定して取得するためのリクエスト
+message GetBookRequest {
+  // 取得したい本のID
+  string id = 1;
+}
+
+// 1冊の本の情報を返すレスポンス
+message GetBookResponse {
+  // Book型のデータが1つ返る
+  Book book = 1;
+}
+// 複数の本の一覧を取得するためのリクエスト（今回は特に条件なし）
+message ListBooksRequest {}
+
+// 複数の本の情報を返すレスポンス
+message ListBooksResponse {
+  // Book型のリスト（配列）が返る
+  repeated Book books = 1;
+}
+// gRPCサービスの定義開始
+service BookService {
+  // 1冊の本を取得するRPCメソッド。GetBookRequestを受け取り、GetBookResponseを返す
+  rpc GetBook(GetBookRequest) returns (GetBookResponse);
+
+  // 複数の本の一覧を取得するRPCメソッド。ListBooksRequestを受け取り、ListBooksResponseを返す
+  rpc ListBooks(ListBooksRequest) returns (ListBooksResponse);
+}
