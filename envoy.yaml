@@ -1,0 +1,64 @@
+static_resources:
+  listeners:
+    - name: listener_0
+      address:
+        socket_address:
+          address: 0.0.0.0          # すべてのネットワークインターフェースでリッスン
+          port_value: 8080          # Envoyが受け付けるポート（Reactなどからのアクセス先）
+      filter_chains:
+        - filters:
+            - name: envoy.filters.network.http_connection_manager
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                stat_prefix: grpc_web   # ステータスやメトリクス用の名前
+                codec_type: auto       # HTTP/1.1かHTTP/2か自動判別
+                route_config:
+                  name: local_route
+                  virtual_hosts:
+                    - name: local_service
+                      domains: ["*"]    # どのドメインからのリクエストでも受け入れ
+                      routes:
+                        - match:
+                            prefix: "/"   # すべてのパスをマッチ
+                          route:
+                            cluster: grpc_server  # リクエストをこのクラスターへルーティング
+                            max_grpc_timeout: 0s  # gRPCタイムアウトなし（必要に応じて設定可）
+                http_filters:
+                  - name: envoy.filters.http.grpc_web
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.grpc_web.v3.GrpcWeb
+                  - name: envoy.filters.http.cors
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.cors.v3.Cors
+                      allow_origin_string_match:
+                        - prefix: "http://localhost:5173"  # ReactアプリのURL
+                      allow_methods:
+                        - GET
+                        - POST
+                        - PUT
+                        - DELETE
+                        - OPTIONS
+                      allow_headers:
+                        - content-type
+                        - x-grpc-web
+                        - x-user-agent
+                      max_age: "1728000"
+                  - name: envoy.filters.http.router
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router 
+
+  clusters:
+    - name: grpc_server                     # クラスター名（routesで指定した名前と一致）
+      connect_timeout: 0.25s                # サーバ接続のタイムアウト時間
+      type: logical_dns                    # DNS名前解決を使う（gRPCサーバのホスト名解決）
+      lb_policy: round_robin                # ロードバランシング方式（今回は単一サーバでも問題なし）
+      http2_protocol_options: {}           # HTTP/2を有効にする（gRPCはHTTP/2必須）
+      load_assignment:
+        cluster_name: grpc_server
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: host.docker.internal  # Dockerコンテナから見たホストマシンのアドレス(Mac/Windows用)
+                      port_value: 50051             # gRPCサーバがリッスンしているポート

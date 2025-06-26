@@ -637,6 +637,9 @@ brew install protobuf
 あなたとマシンとが交わす「約束ごと」——言うなれば技術の書状
 - 設計図（proto）をもとに、プログラムの“部品”を自動生成
 
+### コード生成コマンド
+protoc --go_out=. --go-grpc_out=. book.proto
+
 ###### コードを生み出す「protoc」の導入
 # 1. Protocol Buffers コンパイラ（protoc）をインストール
 brew install protobuf

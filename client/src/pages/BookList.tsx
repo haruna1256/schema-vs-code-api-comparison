@@ -16,7 +16,7 @@ export default function BookList() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/books")
+      .get("http://localhost:8080/books")
       .then((res) => {
         console.log(res.data);  // ここでAPIレスポンスを確認
         setBooks(res.data.books || res.data);  // booksがなければレスポンス全体をセット

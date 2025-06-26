@@ -18,7 +18,7 @@ services:
       context: ./server
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "5001:5001"
     working_dir: /app
     volumes:
       - ./server:/app
@@ -32,6 +32,27 @@ services:
       - ./src/openapi/api/openapi.yaml:/src/openapi/api/openapi.yaml:ro
     ports:
       - '3001:4010'
+
+
+  grpserver:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      ports:
+        - "50051:50051" 
+      networks:
+        - app-network
+
+  envoy:
+    image: envoyproxy/envoy:v1.29-latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+    networks:
+      - app-network
+    depends_on:
+      - server 
 
 networks:
   app-network:

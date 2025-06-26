@@ -27,3 +27,5 @@ func main() {
 		log.Fatalf("gRPCサーバーの起動に失敗: %v", err)
 	}
 }
+
+
