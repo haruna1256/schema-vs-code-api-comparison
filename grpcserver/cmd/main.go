@@ -6,8 +6,8 @@ import (
 	"net"
 
 	"google.golang.org/grpc"
-	bookpb "github.com/haruna1256/schema-vs-code-api-comparison/proto/book"
-	"github.com/haruna1256/schema-vs-code-api-comparison/server"
+	bookpb "github.com/haruna1256/schema-vs-code-api-comparison/grpcserver/proto/book"
+	"github.com/haruna1256/schema-vs-code-api-comparison/grpcserver/server"
 	"google.golang.org/grpc/reflection"
 )
 

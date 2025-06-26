@@ -2,7 +2,7 @@ package server
 
 import (
 	"context"
-	"github.com/haruna1256/schema-vs-code-api-comparison/proto/book"
+	"github.com/haruna1256/schema-vs-code-api-comparison/grpcserver/proto/book"
 )
 
 type BookServiceServer struct {

@@ -35,13 +35,13 @@ services:
 
 
   grpserver:
-      build:
-        context: .
-        dockerfile: Dockerfile
-      ports:
-        - "50051:50051" 
-      networks:
-        - app-network
+    build:
+      context: ./grpcserver
+      dockerfile: Dockerfile
+    ports:
+      - "50051:50051"
+    networks:
+      - app-network
 
   envoy:
     image: envoyproxy/envoy:v1.29-latest
