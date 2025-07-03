@@ -1,18 +1,15 @@
-# grpcserver/Dockerfile
-FROM golang:1.22
+FROM golang:1.24.2-bullseye
 
 WORKDIR /app
 
-# Goモジュールのキャッシュ用
-COPY ./go.mod ./
-COPY ./go.sum ./
-RUN go mod download
+# ルートの go.mod と go.sum をコピー
+COPY go.mod go.sum ./
 
-# ソースコードを追加
-COPY . .
+# grpcserver フォルダの中身をコピー（相対パス指定）
+COPY grpcserver ./grpcserver
 
-# ビルド
-RUN go build -o server .
+RUN go mod tidy
 
-# 実行
+RUN go build -o server ./grpcserver/cmd
+
 CMD ["./server"]

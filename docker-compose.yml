@@ -13,17 +13,17 @@ services:
     networks:
       - app-network
 
-  server:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-    ports:
-      - "5001:5001"
-    working_dir: /app
-    volumes:
-      - ./server:/app
-    networks:
-      - app-network
+  # server:
+  #   build:    
+  #     context: ./codefirst
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "5001:5001"
+  #   working_dir: /app
+  #   volumes:
+  #     - ./codefirst:/app
+  #   networks:
+  #     - app-network
 
   prism:
     image: stoplight/prism:4
@@ -34,10 +34,10 @@ services:
       - '3001:4010'
 
 
-  grpserver:
+  grpcserver:
     build:
-      context: ./grpcserver
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./grpcserver/Dockerfile
     ports:
       - "50051:50051"
     networks:
@@ -52,7 +52,7 @@ services:
     networks:
       - app-network
     depends_on:
-      - server 
+      - grpcserver 
 
 networks:
   app-network:
