@@ -42,7 +42,7 @@ services:
       - "50051:50051"
     networks:
       - app-network
-
+  
   envoy:
     image: envoyproxy/envoy:v1.29-latest
     ports:
@@ -54,6 +54,26 @@ services:
     depends_on:
       - grpcserver 
 
+  db:
+    image: mysql:8.0
+    container_name: book-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: book_app
+      MYSQL_USER: book_user
+      MYSQL_PASSWORD: book_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d
+      - db-data:/var/lib/mysql
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  db-data:
