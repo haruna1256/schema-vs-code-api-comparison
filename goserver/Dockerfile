@@ -1,16 +1,31 @@
-FROM golang:1.21-alpine
+# Stage 1: Build the Go application
+FROM golang:1.24-alpine AS builder
 
 WORKDIR /app
 
-# go.sum がない場合、ここは go.mod のみ
-COPY go.mod ./
-RUN go mod download || true  # 依存なしでも失敗しないように
+# Goモジュールに外部依存がないため、go.mod/go.sum のコピーとgo mod downloadは不要
+# COPY go.mod .
+# COPY go.sum .
+# RUN go mod download
 
-# ソースをコピー
+# Goアプリケーションのソースコードを全てコピー
 COPY . .
 
-# ビルド
-RUN go build -o main .
+# GoアプリケーションをLinux用にビルドします。
+# CGO_ENABLED=0 はCGOを無効にし、バイナリを静的リンクにしてDockerでの移植性を高めます。
+# GOOS=linux と GOARCH=amd64 は明示的にターゲットOSとアーキテクチャを設定します。
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o main .
 
-# 実行
+# Stage 2: Create the final, minimal image
+FROM alpine:latest
+
+WORKDIR /app
+
+# ビルダー（builder）ステージからコンパイル済みのバイナリをコピー
+COPY --from=builder /app/main .
+
+# Goアプリケーションがリッスンするポート（例: 8080）を公開
+EXPOSE 8080
+
+# Goアプリケーションを実行するコマンド
 CMD ["./main"]

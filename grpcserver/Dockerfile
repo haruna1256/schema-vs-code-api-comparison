@@ -1,15 +1,18 @@
+# Go言語公式イメージ（Linux）をベースにする
 FROM golang:1.24.2-bullseye
-
+# 作業ディレクトリを作成
 WORKDIR /app
 
-# ルートの go.mod と go.sum をコピー
-COPY go.mod go.sum ./
+# Go moduleファイルを先にコピーして依存取得
+COPY go.mod ./
+COPY go.sum ./
+RUN go mod download
 
-# grpcserver フォルダの中身をコピー（相対パス指定）
-COPY grpcserver ./grpcserver
+# 残りのコードをコピー
+COPY . .
 
-RUN go mod tidy
+# ビルド（Linux向けになる）
+RUN go build -o main .
 
-RUN go build -o server ./grpcserver/cmd
-
-CMD ["./server"]
+# 実行
+CMD ["./main"]

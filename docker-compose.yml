@@ -21,14 +21,14 @@ services:
       - '3001:4010'
 
 
-  grpcserver:
-    build:
-      context: .
-      dockerfile: ./grpcserver/Dockerfile
-    ports:
-      - "50051:50051"
-    networks:
-      - app-network
+  # grpcserver:
+  #   build:
+  #     context: .
+  #     dockerfile: ./grpcserver/Dockerfile
+  #   ports:
+  #     - "50051:50051"
+  #   networks:
+  #     - app-network
   
   # envoy:
   #   image: envoyproxy/envoy:v1.29-latest
@@ -47,8 +47,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5002:8080"  
-    # volumes:
-    #   - ./goserver:/app
+    volumes:
+      - ./goserver:/app
     networks:
       - app-network
     depends_on:
