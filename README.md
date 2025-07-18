@@ -55,10 +55,6 @@ schema-vs-code-api-comparison/
 │   └── shared/          # 共通のコードやユーティリティ
 │       ├── database.js  # データベース接続など
 │       └── helpers.js   # ヘルパー関数
-├── tests/               # テストコード
-│   ├── openapi/         # OpenAPIのテスト
-│   ├── grpc/            # gRPCのテスト
-│   └── code-first/      # コードファーストのテスト
 ├── scripts/             # 開発用スクリプト（サーバ起動など）
 │   └── start-server.js  # サーバー起動スクリプト
 |
