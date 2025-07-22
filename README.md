@@ -16,6 +16,9 @@
 ---
 研究記録は[ここに](https://github.com/haruna1256/schema-vs-code-api-comparison/blob/dev/docs/experiment-log.md)
 
+最終プレゼン資料[スキーマ駆動開発.pdf](https://github.com/user-attachments/files/21359720/default.pdf)
+
+
 
 ---
 
