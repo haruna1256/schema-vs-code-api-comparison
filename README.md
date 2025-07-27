@@ -52,14 +52,9 @@ schema-vs-code-api-comparison/
 │   │   ├── services/    # gRPCサービスの実装
 │   │   └── server.js    # サーバーのエントリーポイント
 │   ├── code-first/      # コードファースト実装
-│   │   ├── models/      # モデルの定義
-│   │   ├── routes/      # APIルートの定義
-│   │   └── server.js    # サーバーのエントリーポイント
-│   └── shared/          # 共通のコードやユーティリティ
-│       ├── database.js  # データベース接続など
-│       └── helpers.js   # ヘルパー関数
-├── scripts/             # 開発用スクリプト（サーバ起動など）
-│   └── start-server.js  # サーバー起動スクリプト
+│       ├── models/      # モデルの定義
+│       ├── routes/      # APIルートの定義
+│       └── server.js    # サーバーのエントリーポイント
 |
 ├── README.md            # プロジェクト概要や使い方
 └── .gitignore           # gitにあげないものを記述
