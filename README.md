@@ -51,10 +51,7 @@ schema-vs-code-api-comparison/
 │   │   ├── proto/       # gRPCの.protoファイル
 │   │   ├── services/    # gRPCサービスの実装
 │   │   └── server.js    # サーバーのエントリーポイント
-│   ├── code-first/      # コードファースト実装
-│       ├── models/      # モデルの定義
-│       ├── routes/      # APIルートの定義
-│       └── server.js    # サーバーのエントリーポイント
+│   
 |
 ├── README.md            # プロジェクト概要や使い方
 └── .gitignore           # gitにあげないものを記述
